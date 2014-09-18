@@ -23,66 +23,73 @@ class contestant(object):
     def __str__(self):
         return self.name
 
-    def __repr__(self):
-        return self.name
+    def play(self, other):
+        m1 = self.next_move()
+        m2 = other.next_move()
+        print('1,2,3... %s x %s' % (m1, m2))
 
-contestants = []
-for ci in range(1,99):
-    fn = 'contestants/contestant%02d' % ci
-    try:
-        with open(fn) as f:
-            contestants.append(contestant(ci, f.readlines()))
-    except FileNotFoundError:
-        break
+        if m1 == m2:
+            winner = None
+        elif ((m1=='rock') and (m2=='scissors') or
+              (m1=='scissors') and (m2=='paper') or
+              (m1=='paper') and (m2=='rock')):
+            winner = self
+        else:
+            winner = other
 
+        if winner is not None:
+            print('%s wins' % winner)
 
+        return winner
 
-def play(c1, c2):
-    m1 = c1.next_move()
-    m2 = c2.next_move()
-    print('1,2,3... %s x %s' % (m1, m2))
-
-    if m1 == m2:
-        winner = None
-    elif ((m1=='rock') and (m2=='scissors') or
-          (m1=='scissors') and (m2=='paper') or
-          (m1=='paper') and (m2=='rock')):
-        winner = c1
-    else:
-        winner = c2
-        print('%s wins' % winner)
-
-    return winner
 
 def battle(c1, c2):
     print('%s against %s' % (c1, c2))
 
     for mi in range(1000):
-        winner = play(c1, c2)
+        winner = c1.play(c2)
         if winner is not None:
             break
 
     return winner
 
+def read_contestant_data():
+    contestants = []
+    for ci in range(1,99):
+        fn = 'contestants/contestant%02d' % ci
+        try:
+            with open(fn) as f:
+                contestants.append(contestant(ci, f.readlines()))
+        except FileNotFoundError:
+            break
+    return contestants
 
-for r in range(1, 100):
-    print('************* Round %d ************' % r)
-    winners = []
-    for ci in range(0, len(contestants), 2):
-        winners.append(battle(contestants[ci], contestants[ci + 1]))
 
-    if len(contestants) == 2:
-        break
-    contestants = winners
-    # print(contestants)
+def competition(contestants):
+    for r in range(1, 100):
+        print('************* Round %d ************' % r)
+        winners = []
+        for ci in range(0, len(contestants), 2):
+            winners.append(battle(contestants[ci], contestants[ci + 1]))
 
-winner = winners[0]
-for c in contestants:
-    if c.name != winner.name:
-        second = c
+        if len(contestants) == 2:
+            break
+        contestants = winners
+        # print(contestants)
+
+    winner = winners[0]
+    for c in contestants:
+        if c.name != winner.name:
+            second = c
+
+    return winner, second
+
+
+winner, second = competition(read_contestant_data())
 
 print('-------------------- The contest is over! -------------------')
 print('Second is', second.name)
 print('Winner is', winner.name)
+
 secret = winner.name + second.name
 print('********************\nSecret is', secret)
