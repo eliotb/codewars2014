@@ -19,14 +19,13 @@ cd pages
 rm -f pages.txt
 for f in one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twenty-one twenty-two twenty-three twenty-four twenty-five twenty-six twenty-seven
 do
-pdftotext -nopgbrk "page-$f.pdf"
-cat "page-$f.txt" >> pages.txt
-rm "page-$f.txt"
+    pdftotext -nopgbrk "page-$f.pdf"
+    cat "page-$f.txt" >> pages.txt
 done
-mv pages.txt ..
 cd ..
 
-base64 -d pages.txt > pages.png
+base64 -d pages/pages.txt > pages.png
 file pages.png
 exiftool pages.png
 echo "See the comment text, work out the secret code"
+strings pages.png | tail -n16
