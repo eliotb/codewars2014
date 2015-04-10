@@ -32,7 +32,7 @@ def lookup(match):
 p = re.compile(r'[a-z]\d+')
 
 br = mechanize.Browser()
-response = br.open('https://codewars.nzpug.org/spreadsheet/question-001')
+response = br.open('http://hackoff.apps.mclean.net.nz/spreadsheet/question-001')
 
 for i in range(1000):
     r = response.read()
